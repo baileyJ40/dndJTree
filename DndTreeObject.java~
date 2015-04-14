@@ -1,0 +1,66 @@
+/* DnDTreeObject.java
+ * A class that will actually hold the data contained by the tree nodes
+ */
+
+package dndJTree;
+
+import java.awt.datatransfer.*;
+import java.io.*;
+
+public class DndTreeObject implements Transferable, Serializable{
+
+    //Constructor
+    public DndTreeObject(Object ob){
+        object = ob;
+        visible = true;
+
+    }
+
+    // The Transferable interface methods
+    public Object getTransferData(DataFlavor flavor)throws UnsupportedFlavorException, IOException{
+        
+        if(flavor.isMimeTypeEqual(DataFlavor.javaJVMLocalObjectMimeType)){
+            return this;
+        }
+        else{
+            throw new UnsupportedFlavorException(flavor);
+        }
+    }
+    public DataFlavor[] getTransferDataFlavors(){
+        
+        return flavors;
+    }
+    public boolean isDataFlavorSupported(DataFlavor flavor){
+        
+        return flavor.isMimeTypeEqual(DataFlavor.javaJVMLocalObjectMimeType +
+            ";class=" + dndJTree.DndTreeObject.class.getName());
+    }
+    // End Transferable methods
+
+    public String toString(){
+        return object.toString();
+    }
+
+    public void setVisible(boolean b){
+        visible = b;
+    }
+
+    public boolean isVisible(){
+        return visible;
+    }
+
+    
+    private Object object;
+    static final DataFlavor[] flavors = {null};
+    static{
+       try{
+           DataFlavor DND_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + 
+               ";class=" + dndJTree.DndTreeObject.class.getName());
+           flavors[0] = DND_FLAVOR;
+       }
+       catch(Exception ex){
+           ex.printStackTrace();
+       }
+    }
+    private boolean visible;
+}
